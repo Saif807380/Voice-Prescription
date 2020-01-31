@@ -13,7 +13,7 @@ class Product with ChangeNotifier {
   static void fetchProduct(String email,String password) async {
     print('going to api login route');
 
-    const url = 'http://723cac1e.ngrok.io/login';
+    const url = 'https://03389954.ngrok.io/login';
     print('gone to api route');
     print(email);
     try {
@@ -45,14 +45,14 @@ class Product with ChangeNotifier {
   static void addProduct(Doctor product) async {
     print('going to api route');
 
-    const url = 'http://723cac1e.ngrok.io/sign_up';
+    const url = 'https://03389954.ngrok.io/sign_up';
     print('gone to api route');
     print(product.email);
     try {
       Doctor1.dname = product.dname;
       Doctor1.cname = product.cname;
       Doctor1.address=product.address;
-      Doctor1.contact=product.contact.toString();
+      Doctor1.contact=product.contact;
       Doctor1.designation=product.designation;
       Doctor1.image=product.imageUrl;
       Doctor1.email=product.email;
@@ -62,7 +62,7 @@ class Product with ChangeNotifier {
       prefs.setString("dname",Doctor1.dname);
       prefs.setString("cname", Doctor1.cname);
       prefs.setString("address", Doctor1.address);
-      prefs.setString("contact", Doctor1.contact.toString());
+      prefs.setInt("contact", Doctor1.contact);
       prefs.setString("designation", Doctor1.designation);
       prefs.setString("email", Doctor1.email);
       prefs.setString("password", Doctor1.password);

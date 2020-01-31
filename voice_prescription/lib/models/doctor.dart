@@ -4,7 +4,7 @@ class Doctor1{
   static String dname;
   static String cname;
   static String address;
-  static String contact;
+  static int contact;
   static String email;
   static String password;
   static String designation;

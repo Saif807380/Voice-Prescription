@@ -11,6 +11,7 @@ import 'package:voice_prescription/models/doctor.dart';
 import 'package:voice_prescription/screens/view_pdf.dart';
 import 'package:voice_prescription/widgets/app_drawer.dart';
 import 'package:voice_prescription/widgets/pdf_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const directoryName = 'Signature';
 
@@ -39,10 +40,20 @@ class _VoiceHomeState extends State<VoiceHome> {
   ];
 
   void load()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (Doctor1.dname == null) {
-      final String url = "http://723cac1e.ngrok.io/get_profile";
-      var response = await http.get(url);
+      final String url = "https://03389954.ngrok.io/get_profile";
+      var response = await http.post(url,
+          headers: {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+          },
+          body: json.encode({
+            "username": prefs.getString("username"),
+          }));
+
       var res = json.decode(response.body);
+      print(res);
       Doctor1.dname = res["doctor_name"];
       Doctor1.cname = res["hospital_name"];
       Doctor1.address = res["hospital_address"];
@@ -106,7 +117,7 @@ class _VoiceHomeState extends State<VoiceHome> {
   }
 
   void predict() async {
-    const url = "http://723cac1e.ngrok.io/symptoms";
+    const url = "https://03389954.ngrok.io/symptoms";
     try {
       final response = await http.post(
         url,
@@ -464,7 +475,7 @@ class _VoiceHomeState extends State<VoiceHome> {
               ),
               GestureDetector(
                 onTap: () async {
-                  const url = "http://723cac1e.ngrok.io/prescription";
+                  const url = "https://03389954.ngrok.io/prescription";
                   try {
                     final response = await http.post(
                       url,

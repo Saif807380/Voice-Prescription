@@ -2,7 +2,7 @@
 
 import 'dart:io';
 import 'dart:ui';
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart' as imgs;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
@@ -10,20 +10,24 @@ import 'package:voice_prescription/models/doctor.dart';
 import 'package:path_provider/path_provider.dart';
 const directoryName = 'Signature';
 
+
 Future<File> createpdf(String path1, String path, List<String> prescription,
     var res, var pres) async {
   final Document pdf = Document(deflate: zlib.encode);
   Directory directory = await getExternalStorageDirectory();
   String path = directory.path;
+  var logo;
+  PdfImage logo1;
 
   var img1 = imgs.decodeImage(File('$path/$directoryName/doctor_sign.png').readAsBytesSync());
 
-  var logo = imgs.decodeImage(File(Doctor1.image).readAsBytesSync());
-
-  PdfImage logo1 = new PdfImage(pdf.document,
-      image: logo.data.buffer.asUint8List(),
-      width: logo.width,
-      height: logo.height);
+  if(Doctor1.image!=null){
+    logo = imgs.decodeImage(File(Doctor1.image).readAsBytesSync());
+    logo1 = new PdfImage(pdf.document,
+        image: logo.data.buffer.asUint8List(),
+        width: logo.width,
+        height: logo.height);
+  }
 
   PdfImage image = new PdfImage(pdf.document,
       image: img1.data.buffer.asUint8List(),
@@ -87,17 +91,17 @@ Future<File> createpdf(String path1, String path, List<String> prescription,
                         children: <Widget>[
                           Column(
                             children: <Widget>[
-                              Container(
+                              Doctor1.image!=null ? Container(
                                 height: 100,
                                 width: 100,
                                 child: Image(logo1),
-                              ),
+                              ) : Container(height: 100,width: 100),
                             ],
                           ),
                           Column(children: <Widget>[
                             Text(Doctor1.dname ?? "", textScaleFactor: 1),
                             Text(Doctor1.email ?? "", textScaleFactor: 1),
-                            Text(Doctor1.contact ?? "", textScaleFactor: 1),
+                            Text((Doctor1.contact).toString() ?? "", textScaleFactor: 1),
                             Text(Doctor1.address ?? "", textScaleFactor: 1),
                           ],
                           crossAxisAlignment: CrossAxisAlignment.end),

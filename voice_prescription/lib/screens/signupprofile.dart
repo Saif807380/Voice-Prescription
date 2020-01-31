@@ -3,15 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:signature/signature.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_prescription/models/doctor.dart';
 import 'package:voice_prescription/screens/doc_sign.dart';
 import 'package:voice_prescription/screens/voice_home.dart';
 
 import '../providers/connect_to_api.dart';
-import '../providers/model.dart';
 import 'login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/model.dart';
 
 class Furthersignup extends StatefulWidget {
   static const routeName = '/signup-2';
@@ -61,31 +60,27 @@ class _Furthersignup extends State<Furthersignup> {
   void initState() {
     super.initState();
     loadProfile();
-    if(Doctor1.cname !=null){
+    if (Doctor1.cname != null) {
       Navigator.of(context).pushNamed(VoiceHome.routeName);
     }
   }
 
   void loadImage() async {
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
-  void loadProfile() async{
+  void loadProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Doctor1.dname = prefs.getString('dname');
     Doctor1.cname = prefs.getString('cname');
     Doctor1.address = prefs.getString('address');
-    Doctor1.contact = prefs.getString('contact');
+    Doctor1.contact = prefs.getInt('contact');
     Doctor1.designation = prefs.getString('designation');
     Doctor1.email = prefs.getString('email');
     Doctor1.password = prefs.getString('password');
     Doctor1.image = prefs.getString('image');
   }
-
-
 
   @override
   void didChangeDependencies() {
@@ -152,12 +147,11 @@ class _Furthersignup extends State<Furthersignup> {
     setState(() {
       _isLoading = false;
     });
-    Navigator.of(context).pushNamed(DocSign.routeName);
+    Navigator.of(context).pushReplacementNamed(DocSign.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
-
     final AppBar appbar = AppBar(
       backgroundColor: Theme.of(context).primaryColor,
       elevation: 0,
@@ -200,7 +194,6 @@ class _Furthersignup extends State<Furthersignup> {
                       initialValue: _initValues['email'],
                       decoration: InputDecoration(labelText: 'email'),
                       textInputAction: TextInputAction.next,
-
                       focusNode: _emailFocusNode,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_passwordFocusNode);
@@ -209,7 +202,7 @@ class _Furthersignup extends State<Furthersignup> {
                         if (value.isEmpty) {
                           return 'Please provide a value.';
                         }
-                        if (!value.contains('@')){
+                        if (!value.contains('@')) {
                           return 'Email id should contain @';
                         }
                         return null;
@@ -239,14 +232,12 @@ class _Furthersignup extends State<Furthersignup> {
                       focusNode: _passwordFocusNode,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_dnameFocusNode);
-
-
                       },
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please provide a value.';
                         }
-                        if( value.length<8){
+                        if (value.length < 8) {
                           return 'Password should be of minimum 8 characters';
                         }
                         return null;
@@ -261,12 +252,10 @@ class _Furthersignup extends State<Furthersignup> {
                           designation: _editedProduct.designation,
                           address: _editedProduct.address,
                           contact: _editedProduct.contact,
-
                         );
                       },
                     ),
                   ),
-
                   ListTile(
                     subtitle: TextFormField(
                       initialValue: _initValues['dname'],
@@ -392,7 +381,7 @@ class _Furthersignup extends State<Furthersignup> {
                           cname: _editedProduct.cname,
                           designation: _editedProduct.designation,
                           address: _editedProduct.address,
-                          contact: double.parse(value),
+                          contact: int.parse(value),
 
                           // isFavorite: _editedProduct.isFavorite,
                         );
@@ -441,8 +430,8 @@ class _Furthersignup extends State<Furthersignup> {
                       height: ScreenUtil.getInstance().setHeight(100),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(20),
-                          ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -462,6 +451,17 @@ class _Furthersignup extends State<Furthersignup> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).pushNamed(Login.routeName);
+                    },
+                    child: Container(
+                      child: Text("Already have an account"),
+                    ),
+                  )
                 ],
               ),
             ),

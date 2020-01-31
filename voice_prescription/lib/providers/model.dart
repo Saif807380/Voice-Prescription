@@ -8,7 +8,7 @@ class Doctor with ChangeNotifier{
   final cname;
   final designation;
   final  address;
-  final double contact;
+  final int contact;
   String imageUrl;
 
 

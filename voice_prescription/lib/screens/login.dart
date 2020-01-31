@@ -27,6 +27,7 @@ class _LoginState extends State<Login> {
   void load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isSelected = prefs.getBool('remember') ?? false;
+    print(_isSelected);
     if (_isSelected) {
       username = prefs.getString('username');
       password = prefs.getString('password');
@@ -94,8 +95,8 @@ class _LoginState extends State<Login> {
             _usernameController.text, _passwordController.text);
         if (Doctor1.docToken != null) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('username', _usernameController.text);
           if (_isSelected) {
-            prefs.setString('username', _usernameController.text);
             prefs.setString('password', _passwordController.text);
             prefs.setBool('walkthrough', Doctor1.walkthrough);
           } else {
@@ -104,8 +105,16 @@ class _LoginState extends State<Login> {
           }
           prefs.setBool('remember', _isSelected).then((_) async {
             if (Doctor1.dname == null) {
-              final String url = "http://723cac1e.ngrok.io/get_profile";
-              var response = await http.get(url);
+              final String url = "https://03389954.ngrok.io/get_profile";
+              var response = await http.post(url,
+                  headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json",
+                  },
+                  body: json.encode({
+                    "username": _usernameController.text,
+                  }));
+
               var res = json.decode(response.body);
               Doctor1.dname = res["doctor_name"];
               Doctor1.cname = res["hospital_name"];
@@ -116,8 +125,6 @@ class _LoginState extends State<Login> {
             }
             Navigator.of(context).pushNamed(VoiceHome.routeName);
           });
-        } else {
-
         }
       } catch (error) {
         print(error);
@@ -152,6 +159,10 @@ class _LoginState extends State<Login> {
               )
             : Container(),
       );
+
+  void goToSignUp() {
+    Navigator.of(context).pushReplacementNamed(Furthersignup.routeName);
+  }
 
   Widget horizontalLine() => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -274,8 +285,12 @@ class _LoginState extends State<Login> {
                                       fontSize:
                                           ScreenUtil.getInstance().setSp(34)),
                                 ),
-                                onTap: () => Navigator.of(context)
-                                    .pushNamed(Furthersignup.routeName),
+                                onTap: () {
+                                  print("Hello");
+                                  setState(() {
+                                    goToSignUp();
+                                  });
+                                },
                               )
                             ],
                           ),
